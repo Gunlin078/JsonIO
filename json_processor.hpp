@@ -5,6 +5,7 @@
 #include <QTextEdit>
 #include <QTableWidget>
 #include <QFile>
+#include <QFileInfo>
 #include <filesystem>
 #include <fstream>
 #include "include/nlohmann/json.hpp"
@@ -21,14 +22,12 @@ public:
         Q_UNUSED(path); Q_UNUSED(textEdit);
         qDebug()<< "Base output was called called";
     }*/
+    //jsonProcessor(){}
+    //~jsonProcessor(){}
 
     void saveToJSON(json& data, const QString& filepath){
-        //std::error_code ec;
         fs::path jsonPath = filepath.toStdString();
         fs::path directoryPath = jsonPath.parent_path();
-        /*if (!fs::is_regular_file(jsonPath, ec)) {
-            std::cerr << "ERROR: " << ec.message() << std::endl;
-            return;}*/
         if (!directoryPath.empty() && !fs::exists(directoryPath)) {
             qDebug() << "ERROR: Parent directory does not exist";
             return;
@@ -79,8 +78,6 @@ public:
         if (!fs::exists(jsonPath)) {
             qDebug() << "The file doesn't exist";
             return;}
-        //std::ofstream file(jsonPath);
-        //file.close();}
         ordered_json j;
         std::ifstream i(jsonPath);
         if (i.is_open() and fs::file_size(jsonPath) > 0){
@@ -99,19 +96,10 @@ public:
         }
         return line;
     }
-    /*void jsonUpperVowelsInName(json& data) {
-        for (auto& item : data) {  // важно: не const auto&, а auto&
-            if (item.contains("name") && item["name"].is_string()) {
-                std::string name = item["name"];
-                QString qstr = QString::fromStdString(name);
-                convertVowelsToUppercase(qstr);
-                item["name"] = qstr.toStdString();
-            }
-        }
-    }*/
     QString jsonUpperVowelsInName(QString& text) {
+        try{
         json data = json::parse(text.toStdString());
-        for (auto& item : data) {  // важно: не const auto&, а auto&
+        for (auto& item : data) {
             if (item.contains("name") && item["name"].is_string()) {
                 std::string name = item["name"];
                 QString qstr = QString::fromStdString(name);
@@ -120,6 +108,10 @@ public:
             }
         }
         return QString::fromStdString(data.dump(4));
+        } catch(const json::parse_error& e){
+            qDebug()<<"JSON parse error"<< e.what();
+            return "]";
+        }
     }
 private:
     json loadFromFile(const QString& filepath) {
@@ -129,15 +121,58 @@ private:
             return json::array();
         }
 
+        QFileInfo fileInfo(file);
+        if (!fileInfo.suffix().compare("json", Qt::CaseInsensitive)){
+            qDebug() << "The file on path:" << filepath << "isn't json";
+            return json::array();
+        }
         QTextStream stream(&file);
         QString content = stream.readAll();
 
-        return json::parse(content.toStdString());
+        try{
+            return json::parse(content.toStdString());
+        }   catch(const json::parse_error& e){
+            qDebug() << "JSON parse error in file:" << filepath <<":"<< e.what();
+            return json::array();
+        }   catch(const json::exception& e){
+            qDebug() << "Unexpected error:"<<e.what();
+            return json::array();
+        }
     }
 };
 
-class jsonOutput: public jsonProcessor{};
-class jsonParser: public jsonProcessor{};
+class jsonOutput//: public jsonProcessor
+{
+    std::ifstream file_;
+    fs::path jsonPath_;
+
+    jsonOutput(const QString& filePath):jsonPath_(filePath.toStdString())
+    {
+        std::ifstream file_(jsonPath_);
+        if (!file_.is_open()) {
+            throw std::runtime_error("Failed to open file: " + jsonPath_.string());
+        }
+        if (!json::accept(file_)){
+            throw std::runtime_error( "The file on path:" + jsonPath_.string() + "isn't json");
+        }
+        file_.clear();
+        file_.seekg(0);
+    }
+
+    void outputtingJsonToATextField__(QTextEdit *textEdit){
+        ordered_json j;
+        if (file_.is_open() and fs::file_size(jsonPath_) > 0){
+            file_>>j;
+        }
+        textEdit->setText(QString::fromStdString(j.dump(4)));
+    }
+
+    ~jsonOutput(){file_.close();}
+    jsonOutput(const jsonOutput&) = delete;
+    jsonOutput& operator=(const jsonOutput&) = delete;
+};
+class jsonInput: public jsonProcessor{};
+
 /*
 json loadFromFile(const QString& filename) {
     QFile file(filename);

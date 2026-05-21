@@ -5,7 +5,7 @@
 #include <QString>
 #include <iostream>
 
-//#include "product_struct.hpp"
+#include "product_struct.hpp"
 #include "json_processor.hpp"
 
 QT_BEGIN_NAMESPACE
