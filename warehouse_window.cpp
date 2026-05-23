@@ -6,7 +6,6 @@ WarehouseWindow::WarehouseWindow(QWidget *parent)
     , ui(new Ui::WarehouseWindow)
 {
     ui->setupUi(this);
-    //getProductsVectorFromJSON("C:/Qt/Lab_6/include/additionalResources/warehouse.json");
 
     if(ui->Output_TableW){
         ui->Output_TableW->setColumnCount(4);
@@ -20,21 +19,24 @@ WarehouseWindow::WarehouseWindow(QWidget *parent)
         ui->Output_TableW->horizontalHeader()->setStretchLastSection(true);
         ui->Output_TableW->setAlternatingRowColors(true);
         ui->Output_TableW->setEditTriggers(QAbstractItemView::NoEditTriggers);}
+
     QObject::connect(ui->Parse_PB, &QPushButton::clicked, [this](){
         QString userPath = ui->GettingPath_LE->text();
-        processor.outputtingJsonToATextField(userPath, ui->Output_TE);
-        processor.outputtingJsonToATable    (userPath, ui->Output_TableW);
+        jsonOutput outputer(userPath);
+
+        outputer.outputtingJsonToATextField(ui->Output_TE);
+        outputer.outputtingJsonToATable    (ui->Output_TableW);
         if (ui->Input_TE->toPlainText().isEmpty())
         {
             QString text = ui->Output_TE->toPlainText();
-            QString result = processor.jsonUpperVowelsInName(text);
+            QString result = outputer.jsonUpperVowelsInName(text);
             ui->Input_TE->setText(result);}});
+
     QObject::connect(ui->Load_PB,  &QPushButton::clicked, [this](){
         if (ui->Input_TE->toPlainText().isEmpty())       return;
-        if (!json::accept(ui->Input_TE->toPlainText().toStdString()))
-            {qDebug()<<"Incorrect punctuation for json"; return;}
-        json j = json::parse(ui->Input_TE->toPlainText().toStdString());
-        processor.saveToJSON(j, ui->WritingPath_LE->text());
+        jsonInput inputer(ui->WritingPath_LE->text());
+        inputer.saveToJSON(ui->Input_TE->toPlainText());
+
     });
 }
 

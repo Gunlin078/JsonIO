@@ -20,8 +20,7 @@ class WarehouseWindow : public QMainWindow
 
 public:
     WarehouseWindow(QWidget *parent = nullptr);
-    //jsonOutput outputer;
-    jsonProcessor processor;
+    //jsonProcessor processor;
     ~WarehouseWindow();
 
 private:
