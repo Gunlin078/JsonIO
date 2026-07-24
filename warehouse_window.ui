@@ -66,7 +66,7 @@ background-color: rgb(115, 255, 99);</string>
      <string notr="true">border-color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string>C:/Qt/Lab_6/include/additionalResources/warehouse.json</string>
+     <string>C:/Qt/JsonIO/include/additionalResources/warehouse.json</string>
     </property>
     <property name="placeholderText">
      <string>Введите путь читаемого json</string>
@@ -88,7 +88,7 @@ background-color: rgb(115, 255, 99);</string>
      <enum>QTabWidget::TabShape::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="JSON_Output">
      <attribute name="title">
@@ -161,7 +161,7 @@ background-color: rgb(115, 255, 99);</string>
        <string notr="true">border-color: rgb(0, 0, 0);</string>
       </property>
       <property name="text">
-       <string>C:/Qt/Lab_6/build/variant.json</string>
+       <string>C:/Qt/JsonIO/build/variant.json</string>
       </property>
       <property name="placeholderText">
        <string>Введите путь читаемого json</string>

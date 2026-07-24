@@ -17,11 +17,6 @@ namespace fs = std::filesystem;
 
 class jsonProcessor{
 public:
-    /*
-    virtual void output(const QString& path, QTextEdit *textEdit){
-        Q_UNUSED(path); Q_UNUSED(textEdit);
-        qDebug()<< "Base output was called called";
-    }*/
     QString convertVowelsToUppercase(QString& line){
         // Список гласных (русский + английский)
         QString vowels = "aeiouyаеёиоуыэюя";
@@ -158,10 +153,6 @@ public:
     }
 
     bool isOpen() override{
-        /*
-        if (!file_.is_open()) {
-            return 0;
-        }   return 1;*/
         return file_.is_open();
     }
     ~jsonOutput(){file_.close();}

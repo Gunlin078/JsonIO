@@ -44,34 +44,3 @@ WarehouseWindow::~WarehouseWindow()
 {
     delete ui;
 }
-/*
-void outputtingJsonToATable(const json& data, QTableWidget* table){
-    table->setRowCount(0);
-    int row = 0;
-    for (const auto& item : data){
-        table->insertRow(row);
-
-        int id = item["id"];
-        QTableWidgetItem *itemId = new QTableWidgetItem(QString::number(id));
-        itemId->setTextAlignment(Qt::AlignCenter);
-        table->setItem(row, 0, itemId);
-
-        QString originalName = QString::fromStdString(item["name"]);
-        QString modifiedName = originalName;
-        QTableWidgetItem *itemName = new QTableWidgetItem(modifiedName);
-        table->setItem(row, 1, itemName);
-
-        float price = item["price"];
-        QTableWidgetItem *itemPrice = new QTableWidgetItem(QString::number(price, 'f', 2));
-        itemPrice->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        table->setItem(row, 2, itemPrice);
-
-        QString expiritionDate = QString::fromStdString(item["expirition_date"]);
-        QTableWidgetItem *itemDate = new QTableWidgetItem(expiritionDate);
-        itemDate->setTextAlignment(Qt::AlignCenter);
-        table->setItem(row, 3, itemDate);
-
-        row++;
-    }
-}
-*/
