@@ -14,17 +14,17 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        warehouse_window.cpp
-        warehouse_window.h
-        warehouse_window.ui
+        JsonOperatorWindow.cpp
+        JsonOperatorWindow.h
+        JsonOperatorWindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(JsonIO
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        product_struct.hpp
-        json_processor.hpp
+
+        jsonProcessor.hpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET JsonIO APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

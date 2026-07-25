@@ -1,5 +1,5 @@
-#ifndef JSON_PROCESSOR_HPP
-#define JSON_PROCESSOR_HPP
+#ifndef JSONPROCESSOR_H
+#define JSONPROCESSOR_H
 
 #include <QString>
 #include <QTextEdit>
@@ -9,41 +9,12 @@
 #include <filesystem>
 #include <fstream>
 #include "include/nlohmann/json.hpp"
-#include "product_struct.hpp"
-
 using json = nlohmann::json;
 using ordered_json = nlohmann::ordered_json;
 namespace fs = std::filesystem;
 
 class jsonProcessor{
 public:
-    QString convertVowelsToUppercase(QString& line){
-        // Список гласных (русский + английский)
-        QString vowels = "aeiouyаеёиоуыэюя";
-        for (int i = 0; i < line.length(); ++i) {
-            if (vowels.contains(line[i], Qt::CaseInsensitive)) {
-                line[i] = line[i].toUpper();
-            }
-        }
-        return line;
-    }
-    QString jsonUpperVowelsInName(QString& text) {
-        try{
-        json data = json::parse(text.toStdString());
-        for (auto& item : data) {
-            if (item.contains("name") && item["name"].is_string()) {
-                std::string name = item["name"];
-                QString qstr = QString::fromStdString(name);
-                convertVowelsToUppercase(qstr);
-                item["name"] = qstr.toStdString();
-            }
-        }
-        return QString::fromStdString(data.dump(4));
-        } catch(const json::parse_error& e){
-            qDebug()<<"JSON parse error"<< e.what();
-            return "]";
-        }
-    }
     bool isJsonExtension(const std::string& path) {
         const std::string ext = ".json";
         if (path.length() >= ext.length()) {
@@ -108,49 +79,6 @@ public:
         }
         textEdit->setText(QString::fromStdString(j.dump(4)));
     }
-    void outputtingJsonToATable(QTableWidget *table){
-        ordered_json j;
-        if (!isOpen() || fs::file_size(jsonPath_) == 0){
-            table->setRowCount(0);
-            qDebug() << "Failed to output to TableWidget";
-            return;
-        }
-
-        file_.clear();
-        file_.seekg(0);
-        file_>>j;
-
-        table->setRowCount(0);
-        int row = 0;
-
-        for (const auto& item : j){
-            Product currentProduct(item);
-            if (!currentProduct.isStillGood()) continue;
-            table->insertRow(row);
-
-            int id = item["id"];
-            QTableWidgetItem *itemId = new QTableWidgetItem(QString::number(id));
-            itemId->setTextAlignment(Qt::AlignCenter);
-            table->setItem(row, 0, itemId);
-
-            QString originalName = QString::fromStdString(item["name"]);
-            QString modifiedName = convertVowelsToUppercase(originalName);
-            QTableWidgetItem *itemName = new QTableWidgetItem(modifiedName);
-            table->setItem(row, 1, itemName);
-
-            float price = item["price"];
-            QTableWidgetItem *itemPrice = new QTableWidgetItem(QString::number(price, 'f', 2));
-            itemPrice->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            table->setItem(row, 2, itemPrice);
-
-            QString expiritionDate = QString::fromStdString(item["expiration_date"]); //!!!
-            QTableWidgetItem *itemDate = new QTableWidgetItem(expiritionDate);
-            itemDate->setTextAlignment(Qt::AlignCenter);
-            table->setItem(row, 3, itemDate);
-
-            row++;
-        }
-    }
 
     bool isOpen() override{
         return file_.is_open();
@@ -208,4 +136,4 @@ public:
     jsonInput(jsonInput&&) = default;
     jsonInput& operator=(jsonInput&&) = default;
 };
-#endif // JSON_PROCESSOR_HPP
+#endif // JSONPROCESSOR_H

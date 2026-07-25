@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WarehouseWindow</class>
- <widget class="QMainWindow" name="WarehouseWindow">
+ <class>JsonOperatorWindow</class>
+ <widget class="QMainWindow" name="JsonOperatorWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -88,11 +88,11 @@ background-color: rgb(115, 255, 99);</string>
      <enum>QTabWidget::TabShape::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="JSON_Output">
      <attribute name="title">
-      <string>Output: json</string>
+      <string>Выгружаемое</string>
      </attribute>
      <widget class="QTextEdit" name="Output_TE">
       <property name="enabled">
@@ -120,24 +120,9 @@ background-color: rgb(115, 255, 99);</string>
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="Table_Output">
-     <attribute name="title">
-      <string>Output: table</string>
-     </attribute>
-     <widget class="QTableWidget" name="Output_TableW">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>571</width>
-        <height>500</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
     <widget class="QWidget" name="JSON_Input">
      <attribute name="title">
-      <string>Input: json</string>
+      <string>Загружаемое</string>
      </attribute>
      <widget class="QLineEdit" name="WritingPath_LE">
       <property name="geometry">
